@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class EnemyMovementScript : MonoBehaviour
 {
-    [SerializeField] private GameObject target;
-    [SerializeField] private GameObject torso;
+    public GameObject target;
+    public GameObject torso;
     [SerializeField] private Rigidbody2D rb;
 
     //Below are general stats given to each enemy. The HP will probably be a combination of torso and leg values, while speed will strictly be leg values.

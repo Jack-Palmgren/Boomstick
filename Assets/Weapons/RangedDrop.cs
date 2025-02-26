@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class RangedDrop : MonoBehaviour
 {
-    //Damage; Bullet Speed, Rate of Fire, Projectile Size, AoE (Explosion Radius)
-    public float[] RangedStats = { 5f, 10f, 20f, 1f, 1f };
+    //Damage; Bullet Speed, Rate of Fire, Projectile Size, AoE, Spread, Amount
+    public float[] RangedStats = { 2f, 10f, 10f, 2f, 3f, 0.5f, 3f };
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject weapon;
     private bool playerIsColliding = false;
@@ -33,7 +33,7 @@ public class RangedDrop : MonoBehaviour
         {
             Movement rangedScript = player.GetComponent<Movement>();
             //rangedScript.meleeName = weaponName;
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 7; i++)
             {
                 rangedScript.ranged[i] = RangedStats[i];
             }

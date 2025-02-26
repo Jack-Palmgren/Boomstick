@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
+using Random = Unity.Mathematics.Random;
 
 public class Movement : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class Movement : MonoBehaviour
     [SerializeField] private CapsuleCollider2D hbx;
     [SerializeField] private CapsuleCollider2D whbx;
     [SerializeField] private GameObject bullet;
+    [SerializeField] private GameObject sprite; //The sprite, which will be under a different game object.
+
     public GameObject clone;
     public float HP = 20f;
 
@@ -19,8 +22,8 @@ public class Movement : MonoBehaviour
     public float[] melee = { 1f, 1f, 1f, 1f };
     public string meleeName = "N/A";
 
-    //ranged weapon stats, such as damage, projectile speed, projectile size, rate of fire (essentially cooldown), AoE (explosion)
-    public float[] ranged = {1f, 1f, 1f, 1f, 1f};
+    //ranged weapon stats, such as damage, projectile speed, projectile size, rate of fire, AoE, Spread, Amount (how many bullets fire per shot, like a shotgun)
+    public float[] ranged = {1f, 1f, 1f, 1f, 1f, 1f, 1f};
     public string rangedName = "N/A";
 
     private float speed = 10f;
@@ -36,10 +39,20 @@ public class Movement : MonoBehaviour
     private bool rangedCoolDown = false; //If true, then the ranged weapon is in cooldown
     private float rangedCoolDownCounter = 0f;
 
+    //Dodge variables
+    private bool isDodgeActive = false;
+    private float dodgeCooldownStat = 60f;
+    private float dodgeCooldown;
+    private bool isDodgeInCooldown = false;
+    private float dodgeDistanceStat = 10f;
+    private float dodgeDistance;
+
     // Start is called before the first frame update
     void Start()
     {
         whbx.enabled = false;
+        dodgeCooldown = dodgeCooldownStat;
+        dodgeDistance = dodgeDistanceStat;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -61,6 +74,8 @@ public class Movement : MonoBehaviour
     void Update()
     {
         //All "update" code is subject to change (I don't want a bunch of if/else statements)
+
+        sprite.transform.position = transform.position;
 
         //Basic movement script below
         Vector2 velHold = Vector2.zero;
@@ -84,6 +99,31 @@ public class Movement : MonoBehaviour
             }
             velHold.Normalize();
 
+            //Dodge right before the rest of the movement script, as dodge will technically manipulate the movement
+            if (((Input.GetKey(KeyCode.C)) || isDodgeActive == true) && !isDodgeInCooldown)
+            {
+                isDodgeActive = true;
+                hbx.enabled = false;
+                velHold = velHold * dodgeDistance;
+                dodgeDistance--;
+                if (dodgeDistance == 0)
+                {
+                    hbx.enabled = true;
+                    isDodgeInCooldown = true;
+                    isDodgeActive = false;
+                }
+            }
+            if (isDodgeInCooldown)
+            {
+                dodgeCooldown--;
+                if (dodgeCooldown == 0)
+                {
+                    isDodgeInCooldown = false;
+                    dodgeCooldown = dodgeCooldownStat;
+                    dodgeDistance = dodgeDistanceStat;
+                }
+            }
+
             //Script below to constaly face the mouse. It should disable when the player is attacking.
             var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPos.z = 0f; // zero z
@@ -96,7 +136,7 @@ public class Movement : MonoBehaviour
         {
             statShowerDebounce = 0f;
             Debug.Log("[MELEE]::: Damage: "+ melee[0]+ " ||| Swing Speed: "+ melee[1]+ " ||| Hurtbox Length: "+ melee[2]+ " ||| Hurtbox Width: "+ melee[3]);
-            Debug.Log("[RANGED]::: Damage: " + ranged[0] + " ||| Speed: " + ranged[1] + " ||| Size: " + ranged[2] + " ||| Rate of Fire: " + ranged[3] + " ||| AoE: "+ ranged[4]);
+            Debug.Log("[RANGED]::: Damage: " + ranged[0] + " ||| Speed: " + ranged[1] + " ||| Size: " + ranged[2] + " ||| Rate of Fire: " + ranged[3] + " ||| AoE: "+ ranged[4] + " ||| Spread: " + ranged[5] + " ||| Amount: " + ranged[6]);
         } else if (statShowerDebounce != 20f)
         {
             statShowerDebounce++;
@@ -156,18 +196,23 @@ public class Movement : MonoBehaviour
             rangedWeaponBuffer = -1;
             rangedWeaponActive = true;
             rangedCoolDown = true;
-            rangedCoolDownCounter = ranged[0] + ranged[1] + ranged[2] + ranged[4]; //Cooldown will be proportional to how good the weapon's damage, speed, size, and AoE is.
+            rangedCoolDownCounter = ((ranged[0] + ranged[1] + ranged[2] + ranged[4]) - ranged[3]) * ranged[6]; //Cooldown will be proportional to how good the weapon's damage, speed, size, and AoE is.
+            
             //Script below will spawn a projectile, which will be its own "entity"
-            clone = Instantiate(bullet, rb.transform.localPosition, Quaternion.identity) as GameObject;
-            ProjectileScript projectileStats = clone.GetComponent<ProjectileScript>();
-
-            var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mouseWorldPos.z = 0f; // zero z
-            projectileStats.destination = mouseWorldPos;
-            for (int i = 0; i < 5; i++)
+            for(int i=0; i < ranged[6]; i++)
             {
-                projectileStats.projStats[i] = ranged[i];
+                clone = Instantiate(bullet, rb.transform.localPosition, Quaternion.identity) as GameObject;
+                ProjectileScript projectileStats = clone.GetComponent<ProjectileScript>();
+
+                var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mouseWorldPos.z = 0f; // zero z
+                projectileStats.destination = mouseWorldPos;
+                for (int j = 0; j < 7; j++)
+                {
+                    projectileStats.projStats[j] = ranged[j];
+                }
             }
+            
         }
         else if (rangedWeaponActive)
         {
@@ -188,7 +233,7 @@ public class Movement : MonoBehaviour
         }
         else if (rangedCoolDown) //Ranged weapon has entered cooldown
         {
-            if (rangedCoolDownCounter == 0)
+            if (rangedCoolDownCounter <= 0)
             {
                 rangedCoolDown = false; //no longer in cooldown
             }

@@ -7,6 +7,6 @@ How to get this project in unity:
 
 How to update the repository with your current build:
 	1) Using terminal, run (git add <name of file you updated>)
-	2) run (git commit -m "<your message here>")
+	2) run (git commit -m "<your message of choice here, ususally just describing what you changed>")
 	3) run (git push -u origin main)
 	4) Hopefully this works

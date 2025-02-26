@@ -8,7 +8,7 @@ public class ProjectileScript : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private GameObject bullet;
     [SerializeField] private CapsuleCollider2D capCollide;
-    public float[] projStats = { 1f, 1f, 1f, 1f, 1f };
+    public float[] projStats = { 1f, 1f, 1f, 1f, 1f, 1f, 1f };
     private Vector3 reSize;
     private float rangedDespawnCounter = 1000f; //Flies for 1000 frames, then despawns
     private bool isExploding = false; //is true when the bullet is exploding
@@ -18,11 +18,16 @@ public class ProjectileScript : MonoBehaviour
     private Vector2 mvel = Vector2.zero;
     void Start()
     {
+        Vector2 xVal = new Vector2(UnityEngine.Random.Range(-projStats[5], projStats[5]), 0);
+        Vector2 yVal = new Vector2(0, UnityEngine.Random.Range(-projStats[5], projStats[5]));
+
         transform.right = transform.position - destination; //faces the target location
+        transform.right = transform.right + new Vector3(xVal.x, yVal.y, 0f);
+
         mvel = transform.position - destination; //mvel, AKA movement velocity
         mvel.Normalize();
-
-        
+        mvel = mvel + xVal + yVal;
+        mvel.Normalize();
     }
 
     // Update is called once per frame

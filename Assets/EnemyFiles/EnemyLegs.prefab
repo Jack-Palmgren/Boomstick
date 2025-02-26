@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8700683265246494531}
   - component: {fileID: 5604019732542358366}
   m_Layer: 0
-  m_Name: EnemyLegs 1
+  m_Name: EnemyLegs
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -126,8 +126,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4772c37edaf6e8646848a922001e1417, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  torso: {fileID: 0}
+  target: {fileID: 5102534248266795789, guid: 915491f2c8f9a47469dbd91e35e892f3, type: 3}
+  torso: {fileID: 758610556158929164, guid: 8f1f1e1cc0098c44db3b61d493a51428, type: 3}
   rb: {fileID: 4813770509565112264}
   HP: 20
   Speed: 5
