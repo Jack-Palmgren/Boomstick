@@ -22,7 +22,7 @@ public class Movement : MonoBehaviour
     public float[] melee = { 1f, 1f, 1f, 1f };
     public string meleeName = "N/A";
 
-    //ranged weapon stats, such as damage, projectile speed, projectile size, rate of fire, AoE, Spread, Amount (how many bullets fire per shot, like a shotgun)
+    //ranged weapon stats, such as damage, speed, size, rate of fire, AoE, Spread, Amount (how many bullets fire per shot, like a shotgun)
     public float[] ranged = {1f, 1f, 1f, 1f, 1f, 1f, 1f};
     public string rangedName = "N/A";
 
@@ -41,7 +41,7 @@ public class Movement : MonoBehaviour
 
     //Dodge variables
     private bool isDodgeActive = false;
-    private float dodgeCooldownStat = 60f;
+    private float dodgeCooldownStat = 20f;
     private float dodgeCooldown;
     private bool isDodgeInCooldown = false;
     private float dodgeDistanceStat = 10f;
@@ -79,56 +79,54 @@ public class Movement : MonoBehaviour
 
         //Basic movement script below
         Vector2 velHold = Vector2.zero;
-        if (!meleeWeaponActive && !rangedWeaponActive)
+        if (Input.GetKey(KeyCode.W))
         {
-            if (Input.GetKey(KeyCode.W))
-            {
-                velHold = velHold + new Vector2(0f, 1f);
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                velHold = velHold + new Vector2(0f, -1f);
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                velHold = velHold + new Vector2(-1f, 0f);
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                velHold = velHold + new Vector2(1f, 0f);
-            }
-            velHold.Normalize();
-
-            //Dodge right before the rest of the movement script, as dodge will technically manipulate the movement
-            if (((Input.GetKey(KeyCode.C)) || isDodgeActive == true) && !isDodgeInCooldown)
-            {
-                isDodgeActive = true;
-                hbx.enabled = false;
-                velHold = velHold * dodgeDistance;
-                dodgeDistance--;
-                if (dodgeDistance == 0)
-                {
-                    hbx.enabled = true;
-                    isDodgeInCooldown = true;
-                    isDodgeActive = false;
-                }
-            }
-            if (isDodgeInCooldown)
-            {
-                dodgeCooldown--;
-                if (dodgeCooldown == 0)
-                {
-                    isDodgeInCooldown = false;
-                    dodgeCooldown = dodgeCooldownStat;
-                    dodgeDistance = dodgeDistanceStat;
-                }
-            }
-
-            //Script below to constaly face the mouse. It should disable when the player is attacking.
-            var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mouseWorldPos.z = 0f; // zero z
-            transform.right = mouseWorldPos - transform.position;
+            velHold = velHold + new Vector2(0f, 1f);
         }
+        if (Input.GetKey(KeyCode.S))
+        {
+            velHold = velHold + new Vector2(0f, -1f);
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            velHold = velHold + new Vector2(-1f, 0f);
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            velHold = velHold + new Vector2(1f, 0f);
+        }
+        velHold.Normalize();
+
+        //Dodge right before the rest of the movement script, as dodge will technically manipulate the movement
+        if (((Input.GetKey(KeyCode.C)) || isDodgeActive == true) && !isDodgeInCooldown)
+        {
+            isDodgeActive = true;
+            hbx.enabled = false;
+            velHold = velHold * dodgeDistance;
+            dodgeDistance--;
+            if (dodgeDistance == 0)
+            {
+                hbx.enabled = true;
+                isDodgeInCooldown = true;
+                isDodgeActive = false;
+            }
+        }
+        if (isDodgeInCooldown)
+        {
+            dodgeCooldown--;
+            if (dodgeCooldown == 0)
+            {
+                isDodgeInCooldown = false;
+                dodgeCooldown = dodgeCooldownStat;
+                dodgeDistance = dodgeDistanceStat;
+            }
+        }
+
+        //Script below to constaly face the mouse. It should disable when the player is attacking.
+        var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPos.z = 0f; // zero z
+        transform.right = mouseWorldPos - transform.position;
+
         rb.velocity = velHold * speed;
 
         //below is meant to show the user their weapon stats when they press space
@@ -180,7 +178,7 @@ public class Movement : MonoBehaviour
         }
         else if (weaponCoolDown)
         {
-            if (weaponCoolDownCounter == 0)
+            if (weaponCoolDownCounter <= 0)
             {
                 weaponCoolDown = false; //no longer in cooldown
             }
@@ -193,10 +191,10 @@ public class Movement : MonoBehaviour
         //Ranged attack script (will eventually be triggered by right click)
         if (Input.GetKey(KeyCode.X) && !rangedWeaponActive && !rangedCoolDown)
         {
-            rangedWeaponBuffer = -1;
-            rangedWeaponActive = true;
+            //rangedWeaponBuffer = -1;
+            //rangedWeaponActive = true;
             rangedCoolDown = true;
-            rangedCoolDownCounter = ((ranged[0] + ranged[1] + ranged[2] + ranged[4]) - ranged[3]) * ranged[6]; //Cooldown will be proportional to how good the weapon's damage, speed, size, and AoE is.
+            rangedCoolDownCounter = (100 - ranged[3]*5); //Cooldown will be proportional to how good the weapon's damage, speed, size, and AoE is.
             
             //Script below will spawn a projectile, which will be its own "entity"
             for(int i=0; i < ranged[6]; i++)
@@ -204,9 +202,10 @@ public class Movement : MonoBehaviour
                 clone = Instantiate(bullet, rb.transform.localPosition, Quaternion.identity) as GameObject;
                 ProjectileScript projectileStats = clone.GetComponent<ProjectileScript>();
 
-                var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 mouseWorldPos.z = 0f; // zero z
                 projectileStats.destination = mouseWorldPos;
+                projectileStats.parent = gameObject;
                 for (int j = 0; j < 7; j++)
                 {
                     projectileStats.projStats[j] = ranged[j];
@@ -214,7 +213,7 @@ public class Movement : MonoBehaviour
             }
             
         }
-        else if (rangedWeaponActive)
+        /*else if (rangedWeaponActive)
         {
             if (rangedWeaponBuffer == -1)
             {
@@ -230,7 +229,7 @@ public class Movement : MonoBehaviour
                 rangedWeaponBuffer = rangedWeaponBuffer - ranged[3];
             }
 
-        }
+        }*/
         else if (rangedCoolDown) //Ranged weapon has entered cooldown
         {
             if (rangedCoolDownCounter <= 0)

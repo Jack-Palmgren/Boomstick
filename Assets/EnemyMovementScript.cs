@@ -6,6 +6,7 @@ public class EnemyMovementScript : MonoBehaviour
 {
     public GameObject target;
     public GameObject torso;
+    public bool canMove = true; //Since the torso will handle attacks, the torso will tell the legs if they can move or not.
     [SerializeField] private Rigidbody2D rb;
 
     //Below are general stats given to each enemy. The HP will probably be a combination of torso and leg values, while speed will strictly be leg values.
@@ -21,6 +22,10 @@ public class EnemyMovementScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Vector3 movementVector = Vector3.zero;
+        Vector3 additive = Vector3.zero;
+        additive.y = 0.5f;
+
         if (HP <= 0)
         {
             //Enter dying animation
@@ -29,17 +34,14 @@ public class EnemyMovementScript : MonoBehaviour
             Destroy(torso);
             Destroy(gameObject);
         }
-        else
+        else if (canMove == true)
         {
-            Vector3 additive = Vector3.zero;
-            additive.y = 0.5f;
-            Vector3 movementVector = target.transform.position - gameObject.transform.position;
+            movementVector = target.transform.position - gameObject.transform.position;
             movementVector.Normalize();
-
-            rb.velocity = movementVector * 1f;
-            torso.transform.position = gameObject.transform.position;
-            torso.transform.position = torso.transform.position + additive;
         }
-     
+        rb.velocity = movementVector * 1f;
+        torso.transform.position = gameObject.transform.position;
+        torso.transform.position = torso.transform.position + additive;
+
     }
 }

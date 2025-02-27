@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
@@ -8,16 +9,27 @@ public class ProjectileScript : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private GameObject bullet;
     [SerializeField] private CapsuleCollider2D capCollide;
+    public GameObject parent;
+
     public float[] projStats = { 1f, 1f, 1f, 1f, 1f, 1f, 1f };
     private Vector3 reSize;
     private float rangedDespawnCounter = 1000f; //Flies for 1000 frames, then despawns
     private bool isExploding = false; //is true when the bullet is exploding
+    private string opponent;
 
     public Vector3 destination = Vector3.zero;
 
     private Vector2 mvel = Vector2.zero;
     void Start()
     {
+        if (parent.tag == "Player")
+        {
+            opponent = "Enemy";
+        }
+        else
+        {
+            opponent = "Player";
+        }
         Vector2 xVal = new Vector2(UnityEngine.Random.Range(-projStats[5], projStats[5]), 0);
         Vector2 yVal = new Vector2(0, UnityEngine.Random.Range(-projStats[5], projStats[5]));
 
@@ -49,7 +61,7 @@ public class ProjectileScript : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Enemy")
+        if (collision.gameObject.tag == opponent)
         {
             if (!isExploding)
             {
@@ -57,9 +69,18 @@ public class ProjectileScript : MonoBehaviour
             }
             else
             {
-                EnemyMovementScript enemyScript = collision.gameObject.GetComponent<EnemyMovementScript>();
-                enemyScript.HP = enemyScript.HP - projStats[0];
+                if (opponent == "Enemy")
+                {
+                    EnemyMovementScript enemyScript = collision.gameObject.GetComponent<EnemyMovementScript>();
+                    enemyScript.HP = enemyScript.HP - projStats[0];
+                }
+                else
+                {
+                    Movement enemyScript = collision.gameObject.GetComponent<Movement>();
+                    enemyScript.HP = enemyScript.HP - projStats[0];
+                }
                 Destroy(gameObject);
+
             }
         }
     }

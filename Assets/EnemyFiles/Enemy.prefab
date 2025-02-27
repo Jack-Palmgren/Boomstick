@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 2311449661758019775}
   - component: {fileID: 2853456107352157453}
   - component: {fileID: 2526958656090371647}
-  - component: {fileID: 6496584559499697566}
   - component: {fileID: 396244327964051232}
+  - component: {fileID: -5101733629100793716}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -150,28 +150,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &6496584559499697566
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 758610556158929164}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e436fe365fb42f44795b4aa3f983a33c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  melee:
-  - 1
-  - 1
-  - 1
-  - 1
-  ranged:
-  - 1
-  - 1
-  - 1
-  - 1
 --- !u!114 &396244327964051232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,3 +169,34 @@ MonoBehaviour:
     m_Extent: {x: 0, y: 0, z: 0}
   m_AlwaysUpdate: 1
   m_AutoRebind: 0
+--- !u!114 &-5101733629100793716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 758610556158929164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e436fe365fb42f44795b4aa3f983a33c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  melee:
+  - 1
+  - 1
+  - 1
+  - 1
+  meleeName: N/A
+  ranged:
+  - 2
+  - 10
+  - 2
+  - 2
+  - 3
+  - 0.5
+  - 1
+  rangedName: N/A
+  bullet: {fileID: 1508805451516773294, guid: df40a50438e453b438ae19510fd8ecde, type: 3}
+  clone: {fileID: 0}
+  player: {fileID: 5102534248266795789, guid: 915491f2c8f9a47469dbd91e35e892f3, type: 3}
+  legs: {fileID: 0}

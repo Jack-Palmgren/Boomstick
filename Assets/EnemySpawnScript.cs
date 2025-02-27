@@ -25,6 +25,9 @@ public class EnemySpawnScript : MonoBehaviour
             movement.torso = cloneTorso;
             cloneLegs.transform.position = transform.position;
 
+            EnemyScript attackScript = cloneTorso.GetComponent<EnemyScript>();
+            attackScript.legs = cloneLegs;
+
             Destroy(gameObject);
         }
     }

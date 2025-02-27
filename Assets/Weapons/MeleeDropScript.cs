@@ -12,12 +12,16 @@ public class MeleeDropScript : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject weapon;
     private bool playerIsColliding = false;
-    private string weaponName = "Wooden Sword";
+    private string weaponName = "Iron Pummle";
 
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.name == "Player") {
+        if (collision.gameObject.name == "Player")
+        {
+            GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
+            CameraScript camScript = camera.gameObject.GetComponent<CameraScript>();
+            camScript.textBoxText = "Press 'E' To Equip " + weaponName;
             playerIsColliding = true;
         }
     }
@@ -25,6 +29,9 @@ public class MeleeDropScript : MonoBehaviour
     {
         if (collision.gameObject.name == "Player")
         {
+            GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
+            CameraScript camScript = camera.gameObject.GetComponent<CameraScript>();
+            camScript.textBoxText = "";
             playerIsColliding = false;
         }
     }
