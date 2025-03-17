@@ -134,12 +134,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RangedStats:
-  - 2
+  - 11
   - 10
   - 2
   - 10
   - 3
-  - 0.2
+  - 8
   - 3
   player: {fileID: 0}
   weapon: {fileID: 5429160740398501638}
