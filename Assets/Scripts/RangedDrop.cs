@@ -27,7 +27,7 @@ public class RangedDrop : MonoBehaviour
         {
             GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
             CameraScript camScript = camera.gameObject.GetComponent<CameraScript>();
-            camScript.textBoxText = "";
+            camScript.textBoxText = " ";
             playerIsColliding = false;
         }
     }

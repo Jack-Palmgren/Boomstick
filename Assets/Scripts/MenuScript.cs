@@ -10,12 +10,14 @@ public class MenuScript : MonoBehaviour
     [SerializeField] GameObject menuBody;
     [SerializeField] GameObject player;
     private bool isMenuOpen = false;
+    private bool isStatsOpen = false;
     private float xPosForOpenMenu = -10.7f;
     private float xPosForClosedMenu = -17.917f;
     private bool isMenuMoving = false;
     private float goalPos;
     private float menuSpeed = 50;
     private float incrementer;
+    private float debounce = 120f;
 
     private bool isChangingKeys = false;
     
@@ -45,22 +47,26 @@ public class MenuScript : MonoBehaviour
         }
     }
 
-    public void exitButton()
+    public void ExitButton()
     {
         SceneManager.LoadScene("TitleScene");
     }
 
     public void ToggleStats()
     {
-        if (gameObject.transform.GetChild(6).transform.localScale.y == 0)
+        if (gameObject.transform.GetChild(2).transform.localScale.y == 0)
         {
-            gameObject.transform.GetChild(6).transform.localScale = new Vector3(1f,1f,0f);
+            isStatsOpen = true;
+            gameObject.transform.GetChild(2).transform.localScale = new Vector3(1f,1f,0f);
+            gameObject.transform.GetChild(1).transform.localScale = new Vector3(1f, 0f, 0f);
         }
         else
         {
-            gameObject.transform.GetChild(6).transform.localScale = new Vector3(1f, 0f, 0f);
+            isStatsOpen = false;
+            gameObject.transform.GetChild(2).transform.localScale = new Vector3(1f, 0f, 0f);
+            gameObject.transform.GetChild(1).transform.localScale = new Vector3(1f, 1f, 0f);
         }
-        Transform childTransform = gameObject.transform.GetChild(6);
+        Transform childTransform = gameObject.transform.GetChild(2);
         GameObject childGameObject = childTransform.gameObject;
         Movement playerScript = player.GetComponent<Movement>();
         Transform anotherChild = childTransform.GetChild(0);
@@ -98,23 +104,55 @@ public class MenuScript : MonoBehaviour
 
     public void ToggleSettings()
     {
-        if (gameObject.transform.GetChild(7).transform.localScale.y == 0)
+        if (gameObject.transform.GetChild(3).transform.localScale.y == 0)
         {
-            gameObject.transform.GetChild(7).transform.localScale = new Vector3(1f, 1f, 0f);
+            gameObject.transform.GetChild(3).transform.localScale = new Vector3(1f, 1f, 0f);
+            gameObject.transform.GetChild(1).transform.localScale = new Vector3(1f, 0f, 0f);
         }
         else
         {
-            gameObject.transform.GetChild(7).transform.localScale = new Vector3(1f, 0f, 0f);
+            gameObject.transform.GetChild(3).transform.localScale = new Vector3(1f, 0f, 0f);
+            gameObject.transform.GetChild(1).transform.localScale = new Vector3(1f, 1f, 0f);
         }
     }
 
-    public InputField inputField;
-
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         //string inputText = inputField.text;
         //print(inputText);
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            ToggleMenu();
+        }
+        if (Input.GetKey(KeyCode.Q) && debounce == 120)
+        {
+            debounce = 119f;
+            if (!isMenuOpen)
+            {
+                ToggleMenu();
+            }
+            if (!isStatsOpen)
+            {
+                ToggleStats();
+            }
+            else
+            {
+                ToggleStats();
+                ToggleStats();
+            }
+        }
+        else if (debounce != 120)
+        {
+            if(debounce <= 0)
+            {
+                debounce = 120f;
+            }
+            else
+            {
+                debounce--;
+            }
+        }
         if (isMenuMoving)
         {
             menuBody.transform.position = menuBody.transform.position + new Vector3(goalPos,0f,0f);

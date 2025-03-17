@@ -7,7 +7,7 @@ public class slashTester : MonoBehaviour
 {
     public float speed = 5f;
     public float maxValFS = 10f;
-    private float counter = 4f;
+    private float counter = 0f;
     private float frameSkip; //(MaxValFrameskip): Every 10 frames the animation switches to the next image
     private SpriteResolver spriteResolver;
     private Rigidbody2D rb;
@@ -20,13 +20,13 @@ public class slashTester : MonoBehaviour
         //Debug.Log(frameSkip);
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (frameSkip <= 0f)
         {
             ChangeSprite("Slash", counter);
             counter++;
-            if (counter > 8)
+            if (counter > 7)
             {
                 counter = 0;
                 Destroy(gameObject); //Destroy it after the animation plays

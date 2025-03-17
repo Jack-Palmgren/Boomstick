@@ -48,32 +48,34 @@ public class Movement : MonoBehaviour
     private float weaponCoolDownCounter = 0f;
 
     private bool rangedWeaponActive = false;
-    private float rangedWeaponBuffer = 0f; //Simpler than ranged weapon, 0 = ready to shoot, not 0 = not ready to shoot
+    private float rangedWeaponBuffer = 30f; //Simpler than ranged weapon, 0 = ready to shoot, not 0 = not ready to shoot
     private bool rangedCoolDown = false; //If true, then the ranged weapon is in cooldown
     private float rangedCoolDownCounter = 0f;
 
     //Dodge variables
     private bool isDodgeActive = false;
     private bool isDodgeInCooldown = false;
-    private float dodgeCooldownStat = 25f;
-    private float dodgeDistanceStat = 15f;
+    private float dodgeCooldownStat = 50f;
+    private float dodgeDistanceStat = 10f;
     private float dodgeCooldown;
     private float dodgeDistance;
 
     //Anim variables
-    public float maxValFS = 10f;
+    public float maxValFS = 1f;
     private float counter = 0f;
     private float frameSkip = 10f / 8f; //(MaxValFrameskip): Every 10 frames the animation switches to the next image
     public SpriteResolver spriteResolver;
     private GameObject playerSprite;
     public AudioSource walkAudio;
     public AudioSource swingAudio;
+    private string directional = "Down"; //Used for animating movement and still player anims
 
     // Start is called before the first frame update
     void Start()
     {
         spriteResolver = GameObject.Find("PlayerSprite").GetComponent<SpriteResolver>();
         playerSprite = GameObject.Find("PlayerSprite");
+        frameSkip = maxValFS;
         whbx.enabled = false;
         dodgeCooldown = dodgeCooldownStat;
         dodgeDistance = dodgeDistanceStat;
@@ -100,11 +102,11 @@ public class Movement : MonoBehaviour
         {
             ChangeSprite(animName, counter);
             counter++;
-            if (counter > 8)
+            if (counter >= 8)
             {
                 counter = 0;
             }
-            frameSkip = maxValFS / 8;
+            frameSkip = maxValFS;
         }
         frameSkip--;
     }
@@ -119,7 +121,7 @@ public class Movement : MonoBehaviour
 
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         //Adjusts the HP bar every frame
         HPBar.transform.localScale = new Vector3((maxHPBarScaleX*HP)/20, HPBar.transform.localScale.y, 0f);
@@ -129,54 +131,51 @@ public class Movement : MonoBehaviour
 
         sprite.transform.position = transform.position;
 
-        bool lockNkey = false; //0 if no anim is playing, 1 if they are
+        bool isMoving = false; //Is the player moving?
+        string movement = "Idle";
         //Basic movement script below
         Vector2 velHold = Vector2.zero;
         if (Input.GetKey(KeyCode.W))
         {
             velHold = velHold + new Vector2(0f, 1f);
-            if (!lockNkey)
-            {
-                lockNkey = true;
-                getNPlayAnim("RunUp");
-            }
+            directional = "Up";
+            movement = "Run";
+            isMoving = true;
+            maxValFS = 5f;
         }
         if (Input.GetKey(KeyCode.S))
         {
             velHold = velHold + new Vector2(0f, -1f);
-            if (!lockNkey)
-            {
-                lockNkey = true;
-                getNPlayAnim("RunDown");
-            }
+            directional = "Down";
+            movement = "Run";
+            isMoving = true;
+            maxValFS = 5f;
         }
         if (Input.GetKey(KeyCode.A))
         {
             velHold = velHold + new Vector2(-1f, 0f);
-            if (!lockNkey)
-            {
-                lockNkey = true;
-                playerSprite.transform.localScale = new Vector3(0.1732944f, 0.1732944f, 0.1732944f);
-                getNPlayAnim("RunLeft");
-            }
+            playerSprite.transform.localScale = new Vector3(0.1732944f, 0.1732944f, 0.1732944f);
+            directional = "Left";
+            movement = "Run";
+            isMoving = true;
+            maxValFS = 2.5f;
         }
         if (Input.GetKey(KeyCode.D))
         {
             velHold = velHold + new Vector2(1f, 0f);
-            if (!lockNkey)
-            {
-                lockNkey = true;
-                playerSprite.transform.localScale = new Vector3(-0.1732944f, 0.1732944f, 0.1732944f);
-                getNPlayAnim("RunLeft");
-            }
+            playerSprite.transform.localScale = new Vector3(-0.1732944f, 0.1732944f, 0.1732944f);
+            directional = "Left";
+            movement = "Run";
+            isMoving = true;
+            maxValFS = 2.5f;
         }
         velHold.Normalize();
-
-        if (lockNkey && !walkAudio.isPlaying)
+        getNPlayAnim(movement + directional);
+        if (isMoving && !walkAudio.isPlaying)
         {
             walkAudio.Play();
         }
-        else if (!lockNkey)
+        else if (!isMoving)
         {
             walkAudio.Pause();
         }
@@ -234,8 +233,9 @@ public class Movement : MonoBehaviour
             statShowerDebounce++;
         }
 
+        ///////////////////
         //Below will be some basic attack scripts, again subject to change once I find a better way to do this.
-
+        ///////////////////
         //Melee attack (will eventually be triggered by left click)
         if ((Input.GetKey(meleeInput)) && !meleeWeaponActive && !weaponCoolDown)
         {
@@ -263,13 +263,17 @@ public class Movement : MonoBehaviour
             whbx.offset = wepBoxOffset;
             whbx.enabled = true;
 
-            clone = Instantiate(slashAnimHandler, whbx.transform.localPosition, Quaternion.identity) as GameObject;
-            clone.transform.right = -transform.right;
-            var lookVector = clone.transform.position - mouseWorldPos;
+            clone = Instantiate(slashAnimHandler, transform.localPosition, Quaternion.identity) as GameObject;
+            clone.transform.right = transform.right;
+            var lookVector = mouseWorldPos - hbx.transform.position;
             lookVector.Normalize();
-            clone.transform.position = clone.transform.position - (lookVector * (whbx.size.x));
             clone.transform.parent = transform;
-            clone.transform.localScale = new Vector3(whbx.size.x/3, whbx.size.y/3, 0f);
+            clone.transform.position = transform.position + (lookVector*0.4f);
+            clone.transform.localScale = new Vector3(0.2f*(whbx.size.x*1.25f), 0.2f, 0f);
+            if (lookVector.x < 0f)
+            {
+                clone.transform.localScale = new Vector3(0.2f * (whbx.size.x * 1.25f), -0.2f, 0f);
+            }
             
             slashTester slashScript = clone.GetComponent<slashTester>();
             slashScript.maxValFS = (25) - melee[1];
@@ -311,15 +315,30 @@ public class Movement : MonoBehaviour
         }
 
         //Ranged attack script (will eventually be triggered by right click)
-        if (Input.GetKey(rangedInput) && !rangedWeaponActive && !rangedCoolDown)
+        if (Input.GetKey(rangedInput) && !rangedCoolDown)
         {
-            rangedCoolDown = true;
+            rangedCoolDown = true; 
+            rangedWeaponActive = true;
             rangedCoolDownCounter = (200 - ranged[3]*10); //Cooldown will be proportional to how good the weapon's damage, speed, size, and AoE is.
-            
-            //Script below will spawn a projectile, which will be its own "entity"
-            for(int i=0; i < ranged[6]; i++)
+
+            //resize the gun image so it becomes visible
+            var lookVector = mouseWorldPos - hbx.transform.position;
+            lookVector.Normalize();
+            if (lookVector.x < 0f)
             {
-                clone = Instantiate(bullet, rb.transform.localPosition, Quaternion.identity) as GameObject;
+                gameObject.transform.GetChild(0).transform.localScale = new Vector3(0.2f, -0.2f, 0.2f);
+            }
+            else
+            {
+
+                gameObject.transform.GetChild(0).transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+            }
+
+
+            //Script below will spawn a projectile, which will be its own "entity"
+            for (int i=0; i < ranged[6]; i++)
+            {
+                clone = Instantiate(bullet, transform.GetChild(0).GetChild(0).position, Quaternion.identity) as GameObject;
                 ProjectileScript projectileStats = clone.GetComponent<ProjectileScript>();
 
                 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -342,23 +361,7 @@ public class Movement : MonoBehaviour
             rangedCDBar.transform.localPosition = new Vector3(0f, 0f, 0f);
 
         }
-        /*else if (rangedWeaponActive)
-        {
-            if (rangedWeaponBuffer == -1)
-            {
-                rangedWeaponBuffer = 100;
-            }
-            else if (rangedWeaponBuffer <= 0)
-            {
-                rangedWeaponBuffer = 0;
-                rangedWeaponActive = false;
-            }
-            else
-            {
-                rangedWeaponBuffer = rangedWeaponBuffer - ranged[3];
-            }
-
-        }*/
+        
         else if (rangedCoolDown) //Ranged weapon has entered cooldown
         {
             if (rangedCoolDownCounter <= 0)
@@ -375,5 +378,19 @@ public class Movement : MonoBehaviour
                 rangedCDBar.transform.localPosition = new Vector3(0f, sizeDiff / 3f, 0f);
             }
         }
+        if (rangedWeaponActive) //Buffer a bit for the player to show their gun, shoot, then put their gun away (no more than a half a second)
+        {
+            if (rangedWeaponBuffer <= 0)
+            {
+                rangedWeaponBuffer = 30;
+                gameObject.transform.GetChild(0).transform.localScale = new Vector3(0.2f, 0f, 0.2f);
+                rangedWeaponActive = false;
+            }
+            else
+            {
+                rangedWeaponBuffer--;
+            }
+        }
+
     }
 }
