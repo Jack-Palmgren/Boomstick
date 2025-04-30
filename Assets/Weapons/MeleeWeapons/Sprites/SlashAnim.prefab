@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e5e5e4a06879c114584f3202ffe9baeb, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -84,7 +84,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &9211154110335976249
@@ -100,69 +100,60 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Library:
-  - m_Name: SlashOld
-    m_Hash: 0
-    m_CategoryList:
-    - m_Name: 0
-      m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: cdecb820580533a4a986c2abfe069a69, type: 3}
-    - m_Name: 1
-      m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: 76ec548f2046b1646b153e7fc62f7218, type: 3}
-    - m_Name: 2
-      m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: a9f1830b76dd4a2419fa8a2fd3e9557b, type: 3}
-    - m_Name: 3
-      m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: 9ad97186d3df74d40a6f4af0d8a48cb0, type: 3}
-    - m_Name: 4
-      m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: b9037bcefde726144be3fb87510b26c2, type: 3}
-    - m_Name: 5
-      m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: 4b5437ef19fadd84d8840d8473719219, type: 3}
-    - m_Name: 6
-      m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: 0edbee5987bffd645925c2362397a5cd, type: 3}
-    - m_Name: 7
-      m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: f17e0a8c86b025745807cbedb8a1a594, type: 3}
-    - m_Name: 8
-      m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: 56272c69390d3df43b07ea3e35144ce4, type: 3}
-    - m_Name: 9
-      m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: 3700513a6ebaccf46a1c9b7141d8a977, type: 3}
   - m_Name: Slash
     m_Hash: 0
     m_CategoryList:
     - m_Name: 0
       m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: e5e5e4a06879c114584f3202ffe9baeb, type: 3}
+      m_Sprite: {fileID: 21300000, guid: e8870d21146141c42948d6aadeacbbc5, type: 3}
     - m_Name: 1
       m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: c5f65b08ca4ea8149a713362d2c149ee, type: 3}
+      m_Sprite: {fileID: 21300000, guid: b5ad82da59dcfde4c89e70d840cdf984, type: 3}
     - m_Name: 2
       m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: eb58f9067c685eb41a07ebe89ffeb70b, type: 3}
+      m_Sprite: {fileID: 21300000, guid: 73b4a929f36be714495e13e1ce3d1d5d, type: 3}
     - m_Name: 3
       m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: 4a92977f7d288f3468c57f343eacf9d9, type: 3}
+      m_Sprite: {fileID: 21300000, guid: 6465c071d5f759a4da25ecb33824998c, type: 3}
     - m_Name: 4
       m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: 7ec6da59377f7fa448b800e9eb602412, type: 3}
+      m_Sprite: {fileID: 21300000, guid: 9ab20277dc4777140a093f5f483776f2, type: 3}
     - m_Name: 5
       m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: f3f7f6b478ef76d40a3b1b8bb67e530b, type: 3}
+      m_Sprite: {fileID: 21300000, guid: a97c70d236273c74595e1a2fa1a1e648, type: 3}
     - m_Name: 6
       m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: fb9349203135fd74a97d4fdbc88deacb, type: 3}
+      m_Sprite: {fileID: 21300000, guid: 6c4811a636215044eb298561a38cb947, type: 3}
   - m_Name: Shoot
     m_Hash: 0
     m_CategoryList:
     - m_Name: 0
       m_Hash: 0
-      m_Sprite: {fileID: 21300000, guid: 590a05a6e1c26bd4f85132419b3b3f00, type: 3}
+      m_Sprite: {fileID: 0}
+  - m_Name: Pierce
+    m_Hash: 0
+    m_CategoryList:
+    - m_Name: 0
+      m_Hash: 0
+      m_Sprite: {fileID: 21300000, guid: c0ae949e8360c9e41b64ae15401c0025, type: 3}
+    - m_Name: 1
+      m_Hash: 0
+      m_Sprite: {fileID: 21300000, guid: b81e225da6e34eb46a5f78449ce42c40, type: 3}
+    - m_Name: 2
+      m_Hash: 0
+      m_Sprite: {fileID: 21300000, guid: aca6679f5aacee744b11b8cbb9d36a07, type: 3}
+    - m_Name: 3
+      m_Hash: 0
+      m_Sprite: {fileID: 21300000, guid: 695937f038c49af479c7b4e772edb44e, type: 3}
+    - m_Name: 4
+      m_Hash: 0
+      m_Sprite: {fileID: 21300000, guid: d3aeeef72d497b246be57d5e6c983a98, type: 3}
+    - m_Name: 5
+      m_Hash: 0
+      m_Sprite: {fileID: 21300000, guid: d9c8d06874efa4f4581bc7b98f2adfa3, type: 3}
+    - m_Name: 6
+      m_Hash: 0
+      m_Sprite: {fileID: 21300000, guid: cd4446906667ebf4984f78f8815a8aad, type: 3}
   m_SpriteLibraryAsset: {fileID: 0}
 --- !u!114 &2409382496345249923
 MonoBehaviour:
@@ -178,6 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   maxValFS: 10
+  spriteName: Slash
 --- !u!114 &3819836428754778156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,4 +185,4 @@ MonoBehaviour:
   m_CategoryHash: 2.697242e-35
   m_labelHash: 4.1724694e-31
   m_SpriteKey: 0
-  m_SpriteHash: 813783381
+  m_SpriteHash: 466818833

@@ -7,7 +7,7 @@ public class NewBehaviourScript : MonoBehaviour
 {
     public void PlayButton()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("FloorOne");
     }
     public void quitGame()
     {

@@ -8,7 +8,7 @@ public class CameraScript : MonoBehaviour
     [SerializeField] private Camera _camera;
     [SerializeField] private GameObject _player;
     [SerializeField] private GameObject textBox;
-    public string textBoxText = " ";
+    public string textBoxText = "Hello!";
 
     Vector3 camPos = Vector3.zero;
     // Start is called before the first frame update

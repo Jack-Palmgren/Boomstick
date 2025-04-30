@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 
 public class ProjectileScript : MonoBehaviour
 {
@@ -20,8 +21,15 @@ public class ProjectileScript : MonoBehaviour
     public Vector3 destination = Vector3.zero;
 
     private Vector2 mvel = Vector2.zero;
+
+    //Animation variables
+    public float maxValFS = 10f;
+    private float counter = 0f;
+    private float frameSkip; //(MaxValFrameskip): Every 10 frames the animation switches to the next image
+    private SpriteResolver spriteResolver;
     void Start()
     {
+        transform.GetComponent<Renderer>().sortingOrder = 2;
         if (parent.tag == "Player")
         {
             opponent = "Enemy";
@@ -40,6 +48,10 @@ public class ProjectileScript : MonoBehaviour
         mvel.Normalize();
         mvel = mvel + xVal + yVal;
         mvel.Normalize();
+
+        //Animation
+        spriteResolver = GetComponent<SpriteResolver>();
+        frameSkip = maxValFS / 8;
     }
 
     // Update is called once per frame
@@ -58,6 +70,20 @@ public class ProjectileScript : MonoBehaviour
             Destroy(gameObject);
         }
         rangedDespawnCounter = rangedDespawnCounter - (1f * projStats[1]);
+
+
+        //Animation below
+        if (frameSkip <= 0f)
+        {
+            ChangeSprite("Magic", counter);
+            counter++;
+            if (counter > 6)
+            {
+
+            }
+            frameSkip = maxValFS / 8;
+        }
+        frameSkip--;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -73,15 +99,33 @@ public class ProjectileScript : MonoBehaviour
                 {
                     EnemyMovementScript enemyScript = collision.gameObject.GetComponent<EnemyMovementScript>();
                     enemyScript.HP = enemyScript.HP - projStats[0];
+                    Destroy(gameObject);
                 }
-                else if (collision.isTrigger == false)
+                else if (opponent == "Player" && collision.isTrigger == false)
                 {
                     Movement enemyScript = collision.gameObject.GetComponent<Movement>();
                     enemyScript.HP = enemyScript.HP - projStats[0];
+                    Destroy(gameObject);
                 }
-                Destroy(gameObject);
 
             }
+        }
+        if (collision.gameObject.tag == "Structures")
+        {
+            Destroy(gameObject);
+        }
+        if (collision.gameObject.tag == "Breakable")
+        {
+            Destroy(collision.gameObject);
+            Destroy(gameObject);
+        }
+    }
+
+    void ChangeSprite(string category, float label)
+    {
+        if (spriteResolver)
+        {
+            spriteResolver.SetCategoryAndLabel(category, label.ToString()); // Change dynamically
         }
     }
 

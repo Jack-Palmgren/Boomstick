@@ -7,6 +7,7 @@ public class slashTester : MonoBehaviour
 {
     public float speed = 5f;
     public float maxValFS = 10f;
+    public string spriteName;
     private float counter = 0f;
     private float frameSkip; //(MaxValFrameskip): Every 10 frames the animation switches to the next image
     private SpriteResolver spriteResolver;
@@ -24,7 +25,7 @@ public class slashTester : MonoBehaviour
     {
         if (frameSkip <= 0f)
         {
-            ChangeSprite("Slash", counter);
+            ChangeSprite(spriteName, counter);
             counter++;
             if (counter > 7)
             {
